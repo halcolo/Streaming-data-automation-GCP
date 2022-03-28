@@ -8,6 +8,7 @@ WITH hired_people AS (
     FROM `test_globant.hiring_employees` as he
         join `test_globant.departments` d on d.id = he.department_id
         join `test_globant.jobs` j on j.id = he.job_id
+    WHERE EXTRACT(YEAR FROM PARSE_TIMESTAMP('%Y-%m-%dT%XZ', he.`datetime`)) = 2021
 ),
 CTE1 AS (
     SELECT Department,
