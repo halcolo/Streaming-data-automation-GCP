@@ -15,7 +15,7 @@ import pytz
 
 
 PROJECT_ID = os.getenv('GCP_PROJECT')
-BQ_DATASET = 'test_globant'
+BQ_DATASET = os.getenv('BQ_DATASET')
 ERROR_TOPIC = 'projects/%s/topics/%s' % (PROJECT_ID, 'batch_error_topic')
 SUCCESS_TOPIC = 'projects/%s/topics/%s' % (PROJECT_ID, 'batch_success_topic')
 CS = storage.Client()
@@ -40,10 +40,10 @@ def _insert_into_bigquery(bucket_name, file_name):
     ''' This process sed data from file to GBQ if exist table and match with schema '''
     path = 'gs://%s/%s' % (bucket_name, file_name)
     name = file_name.split('.')[0]
-    BQ_TABLE = name
+    table_name = name
     data_frame = pd.read_csv(path)
     row = json.loads(json.dumps(data_frame.to_dict('records')))
-    table_id = '%s.%s.%s' % (PROJECT_ID, BQ_DATASET, BQ_TABLE)
+    table_id = '%s.%s.%s' % (PROJECT_ID, BQ_DATASET, table_name)
     errors = BQ.insert_rows_json(table=table_id,
                                  json_rows=row)
 
